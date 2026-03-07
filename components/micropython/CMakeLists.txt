@@ -103,7 +103,6 @@ set(MICROPY_SOURCE_PORT
     ${MICROPY_PORT_DIR}/mpthreadport.c
     ${MICROPY_PORT_DIR}/machine_rtc.c
     #${MICROPY_PORT_DIR}/machine_sdcard.c
-    ${MICROPY_PORT_DIR}/bt_secrets.c
 )
 
 set(MICROPY_SOURCE_QSTR
@@ -208,8 +207,10 @@ add_custom_command(
         ${COMPONENT_DIR}/mpconfigoverrides.h
     COMMAND echo extmods: ${EXTMODS} &&
             python3 mpconfigover_generator.py -b ./ \"${EXTMODS_NAMES}\" &&
-            cp mpconfigport.h micropython/ports/esp32/ &&
-            cp help.c micropython/ports/esp32/
+            cp patches/ports/esp32/mpconfigport.h micropython/ports/esp32 &&
+            cp patches/ports/esp32/help.c micropython/ports/esp32 &&
+            cp patches/mpy-cross/main.c micropython/mpy-cross &&
+            cp patches/py/stackctrl.c micropython/py
     WORKING_DIRECTORY ${COMPONENT_DIR}
     DEPENDS ${EXTMODS}
 )
