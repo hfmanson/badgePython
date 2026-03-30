@@ -14,6 +14,8 @@
 #include "sndmixer.h"
 #include "libhelix-mp3/mp3dec.h"
 
+#include "board_kconfig.h"
+
 #ifdef CONFIG_DRIVER_SNDMIXER_ENABLE
 
 #define MAX_SAMPLES_PER_FRAME (1152 * 2)
@@ -108,9 +110,9 @@ int IRAM_ATTR mp3_decode(void *ctx) {
 }
 
 int IRAM_ATTR mp3_init_source(const void *data_start, const void *data_end, int req_sample_rate, void **ctx,
-                    int *stereo) {
+                    int *stereo, const void *seek_func) {
   // Allocate space for the information struct
-  mp3_ctx_t *mp3 = calloc(sizeof(mp3_ctx_t), 1);
+  mp3_ctx_t *mp3 = calloc(1, sizeof(mp3_ctx_t));
   if (!mp3)
     goto err;
 
@@ -159,7 +161,7 @@ err:
 int IRAM_ATTR mp3_init_source_stream(const void *stream_read_fn, const void *stream, int req_sample_rate,
                            void **ctx, int *stereo, const void *seek_func) {
   // Allocate space for the information struct
-  mp3_ctx_t *mp3 = calloc(sizeof(mp3_ctx_t), 1);
+  mp3_ctx_t *mp3 = calloc(1, sizeof(mp3_ctx_t));
   if (!mp3) {
     ESP_LOGE(TAG, "Out of memory error! mp3 is NULL\n");
     goto err;

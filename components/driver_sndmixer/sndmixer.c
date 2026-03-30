@@ -18,6 +18,8 @@
 #include "snd_source_opus.h"
 #include "snd_source_synth.h"
 
+#include "board_kconfig.h"
+
 #ifdef CONFIG_DRIVER_SNDMIXER_ENABLE
 
 #define TAG "Sndmixer"
@@ -105,22 +107,26 @@ static uint8_t beat_sync_bpm = 120; // Preconfigured BPM. Can be configured with
 
 // Grabs a new ID by atomically increasing curr_id and returning its value. This is called outside
 // of the audio playing thread, hence the atomicity.
-static uint32_t new_id() {
-  uint32_t old_id, new_id;
-  do {
-    old_id = curr_id;
-    new_id = old_id + 1;
-    // compares curr_id with old_id, sets to new_id if same, returns old val in new_id
-    uxPortCompareSet(&curr_id, old_id, &new_id);
-  } while (new_id != old_id);
-  return old_id + 1;
+static uint32_t new_id(void) {
+    uint32_t old_id = __atomic_load_n(&curr_id, __ATOMIC_SEQ_CST);
+    uint32_t new_id;
+    while (1) {
+        new_id = old_id + 1;
+        if (__atomic_compare_exchange_n(&curr_id, &old_id, new_id,
+                                        false,
+                                        __ATOMIC_SEQ_CST,
+                                        __ATOMIC_SEQ_CST)) {
+            return new_id;
+        }
+        // on failure, old_id is updated; loop and try again
+    }
 }
 
 static void clean_up_channel(int ch) {
   if(channel[ch].callback_handle) {
     // exec callback
     callback_type do_callback = channel[ch].callback_func;
-    do_callback(channel[ch].callback_handle,0,0);
+    do_callback(channel[ch].callback_handle, NULL);
   }
 
   if (channel[ch].source) {

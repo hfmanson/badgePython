@@ -10,6 +10,8 @@
 #include "sndmixer.h"
 #include "snd_source_wav.h"
 
+#include "board_kconfig.h"
+
 #ifdef CONFIG_DRIVER_SNDMIXER_ENABLE
 
 #define CHUNK_SIZE 16
@@ -57,7 +59,7 @@ typedef struct __attribute__((packed)) {
 } chunk_hdr_t;
 
 int IRAM_ATTR wav_init_source(const void *data_start, const void *data_end, int req_sample_rate, void **ctx,
-                    int *stereo) {
+                    int *stereo, const void *seek_func) {
   // Check sanity first
   char *p        = (char *)data_start;
   wav_ctx_t *wav = heap_caps_calloc(sizeof(wav_ctx_t), 1, MALLOC_CAP_DMA);
@@ -104,8 +106,8 @@ err:
   return -1;
 }
 
-int IRAM_ATTR wav_init_source_stream(void *stream_read_fn, void *stream, int req_sample_rate,
-                           void **ctx, int *stereo, void *seek_func) {
+int IRAM_ATTR wav_init_source_stream(const void *stream_read_fn, const void *stream, int req_sample_rate,
+                           void **ctx, int *stereo, const void *seek_func) {
   ESP_LOGI(TAG, "init wav");
   wav_ctx_t *wav = heap_caps_calloc(sizeof(wav_ctx_t), 1, MALLOC_CAP_DMA);
   if (!wav) {

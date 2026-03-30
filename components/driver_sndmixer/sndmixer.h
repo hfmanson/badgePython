@@ -32,8 +32,8 @@ typedef struct {
   void (*set_waveform)(void *ctx, uint8_t waveform);
 } sndmixer_source_t;
 
-typedef ssize_t (*stream_read_type)(void *, void *, size_t);
-typedef ssize_t (*stream_seek_type)(void *, size_t, size_t);
+typedef int (*stream_read_type)(void *, void *, size_t);
+typedef off_t (*stream_seek_type)(void *, off_t, int);
 
 /**
  * @brief Initialize the sound mixer
@@ -153,7 +153,7 @@ int sndmixer_queue_synth();
 void sndmixer_freq(int id, uint16_t frequency);
 void sndmixer_waveform(int id, uint8_t waveform);
 
-typedef ssize_t (*callback_type)(void *, size_t, size_t);
+typedef _Bool (*callback_type)(void *, void *);
 
 /**
  * @brief Set a callback function to execute after the sample has finished
