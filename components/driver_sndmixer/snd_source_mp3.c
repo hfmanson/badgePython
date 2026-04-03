@@ -110,7 +110,7 @@ int IRAM_ATTR mp3_decode(void *ctx) {
 }
 
 int IRAM_ATTR mp3_init_source(const void *data_start, const void *data_end, int req_sample_rate, void **ctx,
-                    int *stereo, const void *seek_func) {
+                    int *stereo, stream_seek_type seek_func) {
   // Allocate space for the information struct
   mp3_ctx_t *mp3 = calloc(1, sizeof(mp3_ctx_t));
   if (!mp3)
@@ -159,7 +159,7 @@ err:
 }
 
 int IRAM_ATTR mp3_init_source_stream(const void *stream_read_fn, const void *stream, int req_sample_rate,
-                           void **ctx, int *stereo, const void *seek_func) {
+                           void **ctx, int *stereo, stream_seek_type seek_func) {
   // Allocate space for the information struct
   mp3_ctx_t *mp3 = calloc(1, sizeof(mp3_ctx_t));
   if (!mp3) {

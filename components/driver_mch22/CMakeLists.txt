@@ -34,6 +34,8 @@ idf_component_register(
         ${BUILD_DIR}
     REQUIRES
         micropython
+		buses
+		driver_display_ili9341
         driver
         freertos
         esp_timer

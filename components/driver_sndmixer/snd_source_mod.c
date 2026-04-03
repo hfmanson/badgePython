@@ -16,7 +16,7 @@ typedef struct {
 } mod_ctx_t;
 
 int mod_init_source(const void *data_start, const void *data_end, int req_sample_rate, void **ctx,
-                    int *stereo, const void *seek_func) {
+                    int *stereo, stream_seek_type seek_func) {
   mod_ctx_t *mod = calloc(1, sizeof(mod_ctx_t));
   if (!mod)
     return -1;

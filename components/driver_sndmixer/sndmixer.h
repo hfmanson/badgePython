@@ -9,13 +9,16 @@ extern "C" {
 #define SEEK_CUR 1
 #define SEEK_END 2
 
+typedef int (*stream_read_type)(void *, void *, size_t);
+typedef off_t (*stream_seek_type)(void *, off_t, int);
+
 /**
  * @brief Structure describing a sound source
  */
 typedef struct {
   /*! Initialize the sound source. Returns size of data returned per call of fill_buffer. */
   int (*init_source)(const void *data_start, const void *data_end, int req_sample_rate, void **ctx,
-                     int *stereo, const void *seek_func);
+                     int *stereo, stream_seek_type seek_func);
 
     /*! Get the actual sample rate at which the source returns data */
   int (*get_sample_rate)(void *ctx);
@@ -31,9 +34,6 @@ typedef struct {
   /*! Set waveform of synthesizer */
   void (*set_waveform)(void *ctx, uint8_t waveform);
 } sndmixer_source_t;
-
-typedef int (*stream_read_type)(void *, void *, size_t);
-typedef off_t (*stream_seek_type)(void *, off_t, int);
 
 /**
  * @brief Initialize the sound mixer

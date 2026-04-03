@@ -59,7 +59,7 @@ typedef struct __attribute__((packed)) {
 } chunk_hdr_t;
 
 int IRAM_ATTR wav_init_source(const void *data_start, const void *data_end, int req_sample_rate, void **ctx,
-                    int *stereo, const void *seek_func) {
+                    int *stereo, stream_seek_type seek_func) {
   // Check sanity first
   char *p        = (char *)data_start;
   wav_ctx_t *wav = heap_caps_calloc(sizeof(wav_ctx_t), 1, MALLOC_CAP_DMA);
@@ -107,7 +107,7 @@ err:
 }
 
 int IRAM_ATTR wav_init_source_stream(const void *stream_read_fn, const void *stream, int req_sample_rate,
-                           void **ctx, int *stereo, const void *seek_func) {
+                           void **ctx, int *stereo, stream_seek_type seek_func) {
   ESP_LOGI(TAG, "init wav");
   wav_ctx_t *wav = heap_caps_calloc(sizeof(wav_ctx_t), 1, MALLOC_CAP_DMA);
   if (!wav) {
@@ -119,6 +119,7 @@ int IRAM_ATTR wav_init_source_stream(const void *stream_read_fn, const void *str
   wav->seek_func    = seek_func;
   wav->stream       = stream;
 
+  ESP_LOGI(TAG, "seek func %p, stream %p", wav->seek_func, wav->stream);
   ESP_LOGI(TAG, "header @ %d", wav->seek_func(wav->stream, 0, SEEK_CUR));
   riff_hdr_t *riffHdr = calloc(1, sizeof(riff_hdr_t));
   int read = wav->stream_read(wav->stream, riffHdr, sizeof(riff_hdr_t));

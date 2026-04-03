@@ -1,4 +1,5 @@
 #include <sdkconfig.h>
+#include "board_kconfig.h"
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>

@@ -63,9 +63,9 @@ typedef struct {
     struct {
       const void *queue_file_start;
       const void *queue_file_end;
-      const void *read_func;
+      const stream_read_type read_func;
       const void *stream;
-      const void *seek_func;
+      const stream_seek_type seek_func;
       const void *callback_func;
       const void *callback_handle;
       int flags;

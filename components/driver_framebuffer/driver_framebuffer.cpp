@@ -8,6 +8,8 @@
 #include "esp_heap_caps.h"
 #include "esp_log.h"
 #include "esp_system.h"
+#include "board_kconfig.h"
+
 
 
 #include "include/driver_framebuffer_internal.h"

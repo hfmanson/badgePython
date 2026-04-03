@@ -1,6 +1,7 @@
 #pragma once
 
 #include "sdkconfig.h"
+#include "board_kconfig.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdint.h>
