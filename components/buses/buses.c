@@ -23,8 +23,6 @@
 #define NACK_VAL       0x1     // I2C nack value
 
 
-#include "board_kconfig.h"
-
 static SemaphoreHandle_t i2c0_mux = NULL;
 static SemaphoreHandle_t i2c1_mux = NULL;
 

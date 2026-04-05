@@ -1,4 +1,3 @@
-include(${PROJECT_DIR}/board_kconfig.cmake)
 if(CONFIG_DRIVER_SNDMIXER_ENABLE)
     set(srcs
         "driver_i2s.c"

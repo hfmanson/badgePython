@@ -1,5 +1,3 @@
-include(${PROJECT_DIR}/board_kconfig.cmake)
-
 if(CONFIG_DRIVER_FRAMEBUFFER_ENABLE)
 set(srcs
     "driver_framebuffer.cpp"

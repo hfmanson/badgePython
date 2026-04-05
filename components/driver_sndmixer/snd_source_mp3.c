@@ -14,8 +14,6 @@
 #include "sndmixer.h"
 #include "libhelix-mp3/mp3dec.h"
 
-#include "board_kconfig.h"
-
 #ifdef CONFIG_DRIVER_SNDMIXER_ENABLE
 
 #define MAX_SAMPLES_PER_FRAME (1152 * 2)
@@ -69,7 +67,7 @@ void _readData(mp3_ctx_t *mp3) {
   // printf("_readData: %d, %d, %d\n", dataAvailable, bufferAvailable, amountFetched);
 }
 
-int IRAM_ATTR mp3_decode(void *ctx) {
+int mp3_decode(void *ctx) {
   mp3_ctx_t *mp3 = (mp3_ctx_t *)ctx;
 
   if (mp3->stream)
@@ -109,10 +107,10 @@ int IRAM_ATTR mp3_decode(void *ctx) {
   }
 }
 
-int IRAM_ATTR mp3_init_source(const void *data_start, const void *data_end, int req_sample_rate, void **ctx,
-                    int *stereo, stream_seek_type seek_func) {
+int mp3_init_source(const void *data_start, const void *data_end, int req_sample_rate, void **ctx,
+                    int *stereo) {
   // Allocate space for the information struct
-  mp3_ctx_t *mp3 = calloc(1, sizeof(mp3_ctx_t));
+  mp3_ctx_t *mp3 = calloc(sizeof(mp3_ctx_t), 1);
   if (!mp3)
     goto err;
 
@@ -158,10 +156,16 @@ err:
   return -1;
 }
 
-int IRAM_ATTR mp3_init_source_stream(const void *stream_read_fn, const void *stream, int req_sample_rate,
-                           void **ctx, int *stereo, stream_seek_type seek_func) {
+int mp3_init_source_stream(
+  stream_read_type stream_read_fn,
+  void *stream,
+  int req_sample_rate,
+  void **ctx,
+  int *stereo,
+  stream_seek_type seek_func
+) {
   // Allocate space for the information struct
-  mp3_ctx_t *mp3 = calloc(1, sizeof(mp3_ctx_t));
+  mp3_ctx_t *mp3 = calloc(sizeof(mp3_ctx_t), 1);
   if (!mp3) {
     ESP_LOGE(TAG, "Out of memory error! mp3 is NULL\n");
     goto err;
@@ -220,12 +224,12 @@ err:
   return -1;
 }
 
-int IRAM_ATTR mp3_get_sample_rate(void *ctx) {
+int mp3_get_sample_rate(void *ctx) {
   mp3_ctx_t *mp3 = (mp3_ctx_t *)ctx;
   return mp3->lastRate;
 }
 
-int IRAM_ATTR mp3_fill_buffer(void *ctx, int16_t *buffer, int stereo) {
+int mp3_fill_buffer(void *ctx, int16_t *buffer, int stereo) {
   mp3_ctx_t *mp3 = (mp3_ctx_t *)ctx;
   if (mp3->bufferValid <= 0)
     mp3_decode(ctx);
@@ -276,16 +280,20 @@ int mp3_stream_reset_buffer(void *ctx) {
 }
 
 
-const sndmixer_source_t sndmixer_source_mp3 = {.init_source     = mp3_init_source,
-                                               .get_sample_rate = mp3_get_sample_rate,
-                                               .fill_buffer     = mp3_fill_buffer,
-                                               .reset_buffer    = mp3_reset_buffer,
-                                               .deinit_source   = mp3_deinit_source};
+const sndmixer_source_t sndmixer_source_mp3 = {
+  .init_source     = mp3_init_source,
+  .get_sample_rate = mp3_get_sample_rate,
+  .fill_buffer     = mp3_fill_buffer,
+  .reset_buffer    = mp3_reset_buffer,
+  .deinit_source   = mp3_deinit_source
+};
 
-const sndmixer_source_t sndmixer_source_mp3_stream = {.init_source     = mp3_init_source_stream,
-                                                      .get_sample_rate = mp3_get_sample_rate,
-                                                      .fill_buffer     = mp3_fill_buffer,
-                                                      .reset_buffer    = mp3_stream_reset_buffer,
-                                                      .deinit_source   = mp3_deinit_source};
+const sndmixer_source_t sndmixer_source_mp3_stream = {
+  .init_source_stream = mp3_init_source_stream,
+  .get_sample_rate    = mp3_get_sample_rate,
+  .fill_buffer        = mp3_fill_buffer,
+  .reset_buffer       = mp3_stream_reset_buffer,
+  .deinit_source   = mp3_deinit_source
+};
 
 #endif

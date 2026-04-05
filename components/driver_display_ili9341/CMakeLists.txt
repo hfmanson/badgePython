@@ -1,5 +1,3 @@
-include(${PROJECT_DIR}/board_kconfig.cmake)
-
 if(CONFIG_DRIVER_ILI9341_ENABLE)
     set(srcs
         "driver_ili9341.c"

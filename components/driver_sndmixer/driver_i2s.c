@@ -3,8 +3,6 @@
 #include <driver/i2s_std.h>
 #include "driver_i2s.h"
 
-#include "board_kconfig.h"
-
 #ifdef CONFIG_DRIVER_SNDMIXER_ENABLE
 
 #ifdef CONFIG_DRIVER_SNDMIXER_DEBUG

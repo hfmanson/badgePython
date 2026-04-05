@@ -1,4 +1,5 @@
 #ifndef NO_QSTR
+#include <sdkconfig.h>
 #include "rp2040.h"
 #include "ice40.h"
 
@@ -6,7 +7,6 @@
 #include "py/mphal.h"
 #include "py/runtime.h"
 #include <driver/uart.h>
-#include "board_kconfig.h"
 
 #ifdef CONFIG_DRIVER_ILI9341_ENABLE
 #include "driver_ili9341.h"
